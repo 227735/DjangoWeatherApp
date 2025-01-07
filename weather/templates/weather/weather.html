@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+</head>
+<body>
+    <div class="weather-page">
+        <div class="weather-container">
+            {% if show_input %}
+                <h1>Sprawdź pogodę</h1>
+                <form method="get">
+                    <input type="text" name="city" placeholder="Wpisz miasto" value="{{ city }}">
+                    <button type="submit">Sprawdź</button>
+                </form>
+            {% endif %}
+
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% elif not show_input %}
+                <h2>Pogoda w {{ city }}</h2>
+                <p>Temperatura: {{ weather.main.temp }}°C</p>
+                <p>Opis: {{ weather.weather.0.description }}</p>
+                <img src="http://openweathermap.org/img/wn/{{ weather.weather.0.icon }}@2x.png" alt="Ikona pogody">
+
+                <!-- Wschód i zachód słońca -->
+                <p>Wschód słońca: {{ sunrise }}</p>
+                <p>Zachód słońca: {{ sunset }}</p>
+
+                {% if show_forecast and forecast %}
+                    <h3>Prognoza na najbliższe dni:</h3>
+                    <ul>
+                        {% for item in forecast %}
+                            <li>
+                                {{ item.dt_txt }}: {{ item.main.temp }}°C, {{ item.weather.0.description }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <!-- Przycisk do przełączania prognozy -->
+                <form method="get">
+                    <input type="hidden" name="city" value="{{ city }}">
+                    {% if show_forecast %}
+                        <button type="submit" name="show_forecast" value="false">Ukryj prognozę</button>
+                    {% else %}
+                        <button type="submit" name="show_forecast" value="true">Pokaż prognozę</button>
+                    {% endif %}
+                </form>
+                
+                <form method="get">
+                    <button type="submit">Cofnij do wyszukiwania</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
